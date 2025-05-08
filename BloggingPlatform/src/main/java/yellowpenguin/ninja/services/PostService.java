@@ -1,12 +1,14 @@
 package yellowpenguin.ninja.services;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import yellowpenguin.ninja.dto.post.CreatePostRequest;
 import yellowpenguin.ninja.dto.post.DeletePostRequest;
 import yellowpenguin.ninja.dto.post.DeletePostResponse;
@@ -34,7 +36,11 @@ public class PostService {
 	}
 	
 	public PostResponse read(String id) {
-		return null;
+		Optional<Post> optional = repo.findById(id);
+		if(optional.isEmpty()) {
+			throw new EntityNotFoundException("Id doesen't exist.");
+		}
+		return new PostResponse(optional.get());
 	}
 	
 	public PostResponse update(UpdatePostRequest request) {
