@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import jakarta.persistence.EntityNotFoundException;
 import yellowpenguin.ninja.dto.post.CreatePostRequest;
 import yellowpenguin.ninja.dto.post.PostResponse;
+import yellowpenguin.ninja.dto.post.UpdatePostRequest;
 import yellowpenguin.ninja.repositories.PostRepository;
 import yellowpenguin.ninja.services.PostService;
 
@@ -50,8 +51,7 @@ public class PostServiceTest {
 		
 		PostResponse readResponse = service.read(response.getId());
 		
-		assertEquals(request.getCategory(), readResponse.getCategory());
-		
+		assertEquals(request.getCategory(), readResponse.getCategory());		
 	}
 	
 
@@ -65,6 +65,25 @@ public class PostServiceTest {
                 "Expected read() to throw EntityNotFoundException when ID does not exist.");
     }
 	
+    @Test
+	public void testUpdate() {
+		
+		CreatePostRequest request = new CreatePostRequest();
+		request.setTitle("Historias de un pingüino");
+		request.setCategory("Peces");
+		request.setTags(new ArrayList<String>());
+		request.setContent("He podido comer muchos peces hoy, me siento satisfecho y gordito.");		
+		PostResponse response = service.create(request);
+		
+		UpdatePostRequest updateRequest = new UpdatePostRequest();
+		updateRequest.setId(response.getId());
+		updateRequest.setCategory("Muchos Peces!");
+		
+		PostResponse updateResponse = service.update(updateRequest);		
+		PostResponse readResponse = service.read(updateResponse.getId());
+		
+		assertEquals(updateRequest.getCategory(), readResponse.getCategory());		
+	}
 	
 	
 

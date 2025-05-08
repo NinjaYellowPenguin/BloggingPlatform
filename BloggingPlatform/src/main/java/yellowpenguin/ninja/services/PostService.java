@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,15 +35,25 @@ public class PostService {
 	}
 	
 	public PostResponse read(String id) {
+		return new PostResponse(findById(id));
+	}
+	
+	private Post findById(String id) {
 		Optional<Post> optional = repo.findById(id);
 		if(optional.isEmpty()) {
 			throw new EntityNotFoundException("Id doesen't exist.");
 		}
-		return new PostResponse(optional.get());
+		return optional.get();		
 	}
 	
 	public PostResponse update(UpdatePostRequest request) {
-		return null;
+		Post post = findById(request.getId());
+		post.setCategory(request.getCategory());
+		post.setTitle(request.getTitle());
+		post.setContent(request.getContent());
+		post.setTags(request.getTags());
+		post.setUpdatedAt(LocalDateTime.now());
+		return new PostResponse(repo.save(post));
 	}
 	
 	public DeletePostResponse delete(DeletePostRequest request) {
