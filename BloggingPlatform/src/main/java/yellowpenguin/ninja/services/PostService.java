@@ -1,29 +1,43 @@
 package yellowpenguin.ninja.services;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import yellowpenguin.ninja.dto.post.CreatePostRequest;
 import yellowpenguin.ninja.dto.post.DeletePostRequest;
 import yellowpenguin.ninja.dto.post.DeletePostResponse;
+import yellowpenguin.ninja.dto.post.PostResponse;
 import yellowpenguin.ninja.dto.post.UpdatePostRequest;
 import yellowpenguin.ninja.models.Post;
-import yellowpenguin.repositories.PostRepository;
+import yellowpenguin.ninja.repositories.PostRepository;
 
 @Service
 public class PostService {
 	@Autowired
 	private PostRepository repo;
 	
-	public Post create(CreatePostRequest request) {
+	public PostResponse create(CreatePostRequest request) {
+		Post post = new Post();
+		post.setId(UUID.randomUUID().toString());
+		post.setCategory(request.getCategory());
+		post.setContent(request.getContent());
+		post.setCreatedAt(LocalDateTime.now());
+		post.setTags(request.getTags());
+		post.setTitle(request.getTitle());
+		post.setUpdatedAt(null);		
+		
+		return new PostResponse(repo.save(post));
+	}
+	
+	public PostResponse read(String id) {
 		return null;
 	}
 	
-	public Post read(String id) {
-		return null;
-	}
-	
-	public Post update(UpdatePostRequest request) {
+	public PostResponse update(UpdatePostRequest request) {
 		return null;
 	}
 	
