@@ -57,7 +57,12 @@ public class PostService {
 	}
 	
 	public DeletePostResponse delete(DeletePostRequest request) {
-		return null;
+		Post post = findById(request.getId());
+		repo.deleteById(request.getId());
+		DeletePostResponse response = new DeletePostResponse();
+		response.setId(request.getId());
+		response.setTitle(post.getTitle());
+		return response;
 	}
 	
 	
